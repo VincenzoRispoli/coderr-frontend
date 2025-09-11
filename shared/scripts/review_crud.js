@@ -4,7 +4,7 @@ let currentReviewOrdering = '-updated_at'
 async function setReviewsForBusinessUser(id) {
     let reviewsResp = await getData(REVIEW_URL + `?business_user_id=${id}&ordering=${currentReviewOrdering}`);
     if (reviewsResp.ok) {
-        currentReviews = reviewsResp.data;
+        currentReviews = reviewsResp.data.results;
     } else {
         showToastMessage(true, ['Bewertung zu diesem User konnte nicht gefunden werden'])
     }
@@ -13,7 +13,7 @@ async function setReviewsForBusinessUser(id) {
 async function setReviewsForCustomerUser(id) {
     let reviewsResp = await getData(REVIEW_URL + `?reviewer_id=${id}&ordering=${currentReviewOrdering}`);
     if (reviewsResp.ok) {
-        currentReviews = reviewsResp.data;
+        currentReviews = reviewsResp.data.results;
     } else {
         showToastMessage(true, ['Bewertung zu diesem User konnte nicht gefunden werden'])
     }

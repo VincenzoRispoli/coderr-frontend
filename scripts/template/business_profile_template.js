@@ -5,19 +5,19 @@
  */
 function getBusinessProfileDataTmplate() {
   if (!currentBusinessUser) {
-    return `<div> Es ist ein Fehler aufgetreten </div>`;
+    return /*html*/ `<div> Es ist ein Fehler aufgetreten </div>`;
   }
 
-  return `    <div class="d_flex_cs_gm f_d_c">
+  return /*html*/ `    <div class="d_flex_cs_gm f_d_c">
                     <img class="profile_img" src="${getPersonImgPath(
                       currentBusinessUser.file
                     )}" alt="Profilbild">
                     <div>
-                        <h3>${currentBusinessUser.first_name} ${
-    currentBusinessUser.last_name
+                        <h3>${currentBusinessUser.user.first_name} ${
+    currentBusinessUser.user.last_name
   }</h3>
                         <p class="font_sec_color">
-                            @${currentBusinessUser.username}
+                            @${currentBusinessUser.user.username}
                         </p>
                     </div>
                     <p>
@@ -29,7 +29,7 @@ function getBusinessProfileDataTmplate() {
                     <div class="d_flex_cs_gm f_d_c w_full">
                         <p class="d_flex_cc_gm">
                             <img src="./assets/icons/mail.svg" alt="" srcset="">
-                            ${currentBusinessUser.email}
+                            ${currentBusinessUser.user.email}
                         </p>
                         <p class="d_flex_cc_gm">
                             <img src="./assets/icons/call.svg" alt="" srcset="">
@@ -43,7 +43,7 @@ function getBusinessProfileDataTmplate() {
                         <p class="d_flex_cc_gm">
                             <img src="./assets/icons/person.svg" alt="" srcset="">
                             Mitglied seit ${formatToMonthYearAndDay(
-                              currentBusinessUser.created_at
+                              currentBusinessUser.uploaded_at
                             )}
                         </p>
                         <hr>

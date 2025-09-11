@@ -4,7 +4,7 @@ let openedEditFeaturefields = [];
 let errorIds = [];
 let currentOfferId = null;
 let currentOffers = [];
-let allOffersLength=null;
+let allOffersLength = null;
 
 async function setOffers(filterParams = {}) {
     let offerResp = await getData(OFFER_URL + getOfferFilter(filterParams));
@@ -16,8 +16,10 @@ async function setOffers(filterParams = {}) {
     return offerResp;
 }
 
-async function setOffersWODetails(filterParams = {}) {    
+async function setOffersWODetails(filterParams = {}) {
+    ;
     let offerResp = await getData(OFFER_URL + getOfferFilter(filterParams));
+
     if (offerResp.ok) {
         allOffersLength = offerResp.data.count
         currentOffers = offerResp.data.results;
@@ -97,11 +99,9 @@ async function onOfferSubmit(event) {
 
 async function addOfferSubmit(form) {
     const data = getFormData(form);
-
     if (validateEmptyFields(form, data)) {
         let cleanData = buildJsonFromFormInput(data);
         let resp = await postDataWJSON(OFFER_URL, cleanData);
-
         if (resp.ok) {
             await uploadCurrentImg(resp.data.id);
             showToastMessage(false, ['Angebote erstellt'])
@@ -116,7 +116,7 @@ async function uploadCurrentImg(id) {
     let respPatch = {}
     if (currentFile) {
         const formData = new FormData();
-        formData.append('image', currentFile);
+        formData.append('file', currentFile);
         respPatch = await patchData(OFFER_URL + id + "/", formData)
         currentFile = null;
     }
@@ -125,7 +125,6 @@ async function uploadCurrentImg(id) {
 
 async function editOfferSubmit(form) {
     const data = getFormData(form);
-
     if (validateEmptyFields(form, data)) {
         let cleanData = buildJsonFromFormInput(data);
         let respPatch = await patchDataWoFiles(OFFER_URL + currentOfferId + "/", cleanData);
@@ -135,10 +134,10 @@ async function editOfferSubmit(form) {
             changedOffer.description = respPatch.data.description;
             changedOffer.title = respPatch.data.title;
             changedOffer.details = respPatch.data.details;
-            
+
             let respImgPatch = await uploadCurrentImg(currentOfferId);
             if (respImgPatch.data) {
-                changedOffer.image = respImgPatch.data.image;
+                changedOffer.file = respImgPatch.data.file;
             }
             await closeProfileBusinessDialogRefresh()
             showToastMessage(false, ['Angebote editiert'])
@@ -157,7 +156,7 @@ async function closeProfileBusinessDialogRefresh() {
     currentOffer = null;
 }
 
-function closeEditDialog(){
+function closeEditDialog() {
     currentOfferId = null;
     currentOffer = null;
     closeDialog('dialog_add_edit_offer');
@@ -168,7 +167,7 @@ function addNewFeature(inputFieldId, offer_type) {
     const detail = currentOffer.details.find(detail => detail.offer_type === offer_type);
 
     if (detail && !(inputValue == "")) {
-        detail.features.push(inputValue);
+        detail.features.push({ "name": inputValue });
         let ListRef = document.getElementById(`offer_feature_list_${detail.offer_type}`)
         ListRef.innerHTML = getOfferDetailFeatureTemplateList(detail);
     }
@@ -200,9 +199,9 @@ function validateRequiredInputs(form) {
     });
 }
 
-function validateFeatureLists(){
+function validateFeatureLists() {
     for (let index = 0; index < currentOffer.details.length; index++) {
-        let type = currentOffer.details[index].offer_type;        
+        let type = currentOffer.details[index].offer_type;
         if (currentOffer.details[index].features.length <= 0) {
             errorIds.push(`offer_feature_list_${type}_error`);
         }
@@ -210,11 +209,11 @@ function validateFeatureLists(){
 }
 
 function validateRevisions(data) {
-    
+
     for (let index = 0; index < currentOffer.details.length; index++) {
         let type = currentOffer.details[index].offer_type
         let inputRef = document.getElementById(`offer_revisions_${type}`)
-        if (!data[`offer_revisions_${type}_limitless`]) { 
+        if (!data[`offer_revisions_${type}_limitless`]) {
             let rev = Number(inputRef.value);
             if (!inputRef.value.trim() || !Number.isInteger(rev)) {
                 errorIds.push(`offer_revisions_${type}_error`);
@@ -230,7 +229,7 @@ function validateFeatureFields() {
     }
 }
 
-function changeRevisionInput(id){
+function changeRevisionInput(id) {
     let checkboxRef = document.getElementById(id + "_limitless")
     let inputRef = document.getElementById(id)
     inputRef.disabled = checkboxRef.checked
@@ -274,9 +273,14 @@ async function setSingleOfferCompletedCount(profileId) {
     return resp;
 }
 
-function buildJsonFromFormInput(data) {    
+function buildJsonFromFormInput(data) {
+    currentOffer.user_id = currentUser.id
     currentOffer.description = data.offer_description;
     currentOffer.title = data.offer_title;
+    let offer_prices = [data.offer_price_basic, data.offer_price_standard, data.offer_price_premium]
+    let delivery_times = [data.offer_delivery_time_basic, data.offer_delivery_time_standard, data.offer_delivery_time_basic]
+    currentOffer.min_price = Math.min(...offer_prices).toString()
+    currentOffer.min_delivery_time = Math.min(...delivery_times).toString();
 
     for (let index = 0; index < currentOffer.details.length; index++) {
         currentOffer.details[index].title = data[`offer_title_${currentOffer.details[index].offer_type}`];
@@ -344,7 +348,7 @@ function saveEditFeature(id, indexFeature, offer_type) {
     if (index !== -1) {
         const removedObject = openedEditFeaturefields.splice(index, 1)[0];
         const detail = currentOffer.details.find(detail => detail.offer_type === offer_type);
-        detail.features[indexFeature] = removedObject.value;
+        detail.features[indexFeature] = { "name": removedObject.value };
         reRenderFeatureList(offer_type)
     }
 }
@@ -359,11 +363,11 @@ function openEditFeature(id, offer_type, indexFeature) {
     const detail = currentOffer.details.find(detail => detail.offer_type === offer_type);
     openedEditFeaturefields.push(
         {
-            value: detail.features[indexFeature],
+            value: detail.features[indexFeature].name,
             old_value: detail.features[indexFeature],
             id: id,
         }
-    )
+    );
     reRenderFeatureList(offer_type)
 }
 
@@ -378,9 +382,9 @@ function calculateNumPages(totalItems, pageSize) {
     return Math.ceil(totalItems / pageSize);
 }
 
-function checkRevisionInput(id){
+function checkRevisionInput(id) {
     let inputRef = document.getElementById(id);
-    if(parseInt(inputRef.value) == NaN || inputRef.value <= 0){
+    if (parseInt(inputRef.value) == NaN || inputRef.value <= 0) {
         inputRef.value = 0;
     } else {
         inputRef.value = parseInt(inputRef.value);

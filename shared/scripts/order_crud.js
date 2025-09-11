@@ -7,13 +7,14 @@ let orderStatus = {
 async function createOrder(detailId) {
     if (detailId) {
         data = {
-            offer_detail_id: detailId
+            "offer_detail_id": detailId,
+            "business_user": currentSingleOfferUser.id,
+            "customer_user": currentUser.id
         }
         let orderResp = await postDataWJSON(ORDER_URL, data);
-
         if (!orderResp.ok) {
             showToastMessage(true, extractErrorMessages(orderResp.data))
-        } 
+        }
         return orderResp
     } else {
         showToastMessage(true, ['Das Angebotsdetail konnte nicht gefunden werden'])

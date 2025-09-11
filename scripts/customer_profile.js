@@ -32,7 +32,7 @@ async function initCProfile() {
  * @returns {Promise<void>}
  */
 async function loadRenderCustomerReviews() {
-  await setReviewsForCustomerUser(currentCustomerUser.user);
+  await setReviewsForCustomerUser(currentCustomerUser.id);
   document.getElementById("customer_profile_review_list").innerHTML =
     getReviewWLinkTemplateList(currentReviews);
 }

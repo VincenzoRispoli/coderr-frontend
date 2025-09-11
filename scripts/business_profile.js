@@ -28,7 +28,7 @@ let currentOfferBusinessProfileFilter = {
  * @returns {Promise<void>}
  */
 async function loadRenderOffers() {
-  currentOfferBusinessProfileFilter.creator_id = currentBusinessUser.user;
+  currentOfferBusinessProfileFilter.creator_id = currentBusinessUser.id;
   await setOffersWODetails(currentOfferBusinessProfileFilter);
   document.getElementById("business_profile_offer_list").innerHTML =
     getOfferTemplateList(currentOffers) +
@@ -68,7 +68,7 @@ async function initBProfile() {
     window.location.href = "./login.html";
   } else {
     await loadBusinessUser();
-    currentOfferBusinessProfileFilter.creator_id = currentBusinessUser.user;
+    currentOfferBusinessProfileFilter.creator_id = currentBusinessUser.id;
     document.getElementById("business_profile_personal_data").innerHTML =
       getBusinessProfileDataTmplate();
     await setUsers();
@@ -86,7 +86,7 @@ async function initBProfile() {
  * @returns {Promise<void>}
  */
 async function loadRenderBusinessBaseInfo() {
-  let resp = await setSingleOfferCompletedCount(currentBusinessUser.user);
+  let resp = await setSingleOfferCompletedCount(currentBusinessUser.id);
   if (resp.ok) {
     document.getElementById("business_profile_project_count").innerText =
       resp.data.completed_order_count;
@@ -119,7 +119,7 @@ async function loadBusinessUser() {
       if (resp.data.type == "business") {
         currentBusinessUser = resp.data;
       } else {
-        window.location.href = `customer_profile.html?id=${resp.data.user}`;
+        window.location.href = `customer_profile.html?id=${resp.data.id}`;
       }
     } else {
       extractErrorMessages(resp.data);
@@ -135,7 +135,7 @@ async function loadBusinessUser() {
  * @returns {Promise<void>}
  */
 async function loadRenderBusinessReviews() {
-  await setReviewsForBusinessUser(currentBusinessUser.user);
+  await setReviewsForBusinessUser(currentBusinessUser.id);
   document.getElementById("business_profile_review_list").innerHTML =
     getReviewWLinkTemplateList(currentReviews);
 }

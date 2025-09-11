@@ -5,23 +5,23 @@
  */
 function getsingleOfferHeaderTemplate() {
   if (!currentSingleOfferUser) {
-    return `<div>Es ist ein Fehler aufgetreten</div>`;
+    return /*html*/ `<div>Es ist ein Fehler aufgetreten</div>`;
   }
   return `        <div class="d_flex_cc_gl f_d_r_resp_c">
-                        <img class="profile_img_l c_pointer" onclick="redirectToCustomerProfile(${
-                          currentSingleOfferUser.user
+                        <img class="profile_img_l c_pointer" onclick="redirectToBusinessProfile(${
+                          currentSingleOfferUser.id
                         })" src="${getPersonImgPath(
     currentSingleOfferUser.file
   )}" alt="Profilbild">
                         <div class="d_flex_cs_gm f_d_c ">
                             <div class="d_flex_cs_gm f_d_r_resp_c">
-                                <h3 class="link c_black" onclick="redirectToCustomerProfile(${
-                                  currentSingleOfferUser.user
-                                })">${currentSingleOfferUser.first_name} ${
-    currentSingleOfferUser.last_name
+                                <h3 class="link c_black" onclick="redirectToBusinessProfile(${
+                                  currentSingleOfferUser.id
+                                })">${currentSingleOfferUser.user.first_name} ${
+    currentSingleOfferUser.user.last_name
   }</h3>
                                 <p class="font_sec_color">
-                                    @${currentSingleOfferUser.username}
+                                    @${currentSingleOfferUser.user.username}
                                 </p>
                             </div>
                             <div class="offer_detail_review">
@@ -46,9 +46,9 @@ function getSingleOfferDetailTemplate() {
   if (!currentOpenedDetail) {
     return `<div>Es ist ein Fehler aufgetreten</div>`;
   }
-  let img = currentSingleOffer.image
+  let img = currentSingleOffer.file
     ? `<img class="offer_detail_img" src="${getOfferImgPath(
-        currentSingleOffer.image
+        currentSingleOffer.file
       )}" alt="Angebotsbild">`
     : "";
 
@@ -100,7 +100,7 @@ function getFeatureListTemplate() {
   let featureList = "";
 
   currentOpenedDetail.features.forEach((feature) => {
-    featureList += `<li>${feature}</li>`;
+    featureList += `<li>${feature.name}</li>`;
   });
   return featureList;
 }

@@ -184,7 +184,7 @@ main {
     width: 100%;
 }
 
-.w_reset{
+.w_reset {
     width: unset !important;
 }
 
@@ -192,7 +192,7 @@ main {
     text-align: center;
 }
 
-.rotate_half{
+.rotate_half {
     transform: rotate(180deg);
 }
 

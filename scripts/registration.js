@@ -18,6 +18,11 @@ function checkAuth() {
 function registerSubmit(event) {
   event.preventDefault();
   const data = getFormData(event.target);
-
   registration(data);
+}
+
+function guestRegistration(type) {
+  let guestData = GUEST_REGIST[type];
+  guestData.type = type
+  registration(guestData)
 }

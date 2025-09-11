@@ -1,11 +1,27 @@
 const GUEST_LOGINS = {
-    customer : {
-        username: 'andrey',
-        password: 'asdasd'
+    customer: {
+        username: 'GuestCustomer',
+        password: 'guestcustomer123'
     },
-    business : {
-        username: 'kevin',
-        password: 'asdasd24'
+    business: {
+        username: 'GuestBusiness',
+        password: 'guestbusiness123'
+    }
+}
+
+const GUEST_REGIST = {
+    customer: {
+        'username': 'GuestCustomer',
+        'email': 'guestcustomer@example.com',
+        'password': 'guestCustomer123',
+        'repeated_password': 'guestCustomer123'
+    },
+
+    business: {
+        'username': 'GuestBusiness',
+        'email': 'guestbusiness@example.com',
+        'password': 'guestBusinsess123',
+        'repeated_password': 'guestBusinsess123'
     }
 }
 
@@ -17,11 +33,11 @@ const LOGIN_URL = 'login/';
 
 const REGISTER_URL = 'registration/';
 
-const PROFILE_URL = 'profile/';
+const PROFILE_URL = 'profiles/';
 
-const BUSINESS_PROFILES_URL = 'profiles/business/';
+const BUSINESS_PROFILES_URL = 'profile/business/';
 
-const CUSTOMER_PROFILES_URL = 'profiles/customer/';
+const CUSTOMER_PROFILES_URL = 'profile/customer/';
 
 const REVIEW_URL = 'reviews/';
 

@@ -38,7 +38,7 @@ function transformApiResponse(apiResponse) {
 }
 
 function getUserInfo(id) {
-    return globalUsers.find(user => user.user.pk === id) || null
+    return globalUsers.find(user => user.id === id) || null
 }
 
 async function setCurrentUser() {

@@ -1,16 +1,17 @@
+// const { jsx } = require("react/jsx-runtime");
+
 function getReviewWLinkTemplateList(reviews) {
-    if (!Array.isArray(reviews) ) {
+    if (!Array.isArray(reviews)) {
         return '<p>Fehler beim Laden der Bewertungen!</p>';
     }
     if (reviews.length === 0) {
         return '<p>Noch keine Bewertungen vorhanden.</p>';
     }
     let reviewListHTML = "";
-
     reviews.forEach(review => {
 
         business_user = getUserInfo(review.business_user)
-        reviewer = getUserInfo(review.reviewer)
+        reviewer = getUserInfo(review.reviewer);
         reviewListHTML += getReviewWLinkTemplate(review, business_user, reviewer)
     });
 
@@ -27,13 +28,13 @@ function getReviewWLinkTemplate(review, business_user, reviewer) {
     return `
                         <div class="card d_flex_cs_gm f_d_c">
                             <div class="d_flex_cs_gm f_d_r_resp_c">
-                                <img class="profile_img_small c_pointer" onclick="redirectToCustomerProfile(${reviewer.user.pk})" src="${getPersonImgPath(reviewer.user.file)}" alt="Benutzeravatar">
+                                <img class="profile_img_small c_pointer" onclick="redirectToCustomerProfile(${reviewer.id})" src="${getPersonImgPath(reviewer.file)}" alt="Benutzeravatar">
                                 <div>
-                                    <h3 class="link c_black w_full" onclick="redirectToCustomerProfile(${reviewer.user.pk})">${reviewer.user.first_name} ${reviewer.user.last_name}</h3>
+                                    <h3 class="link c_black w_full" onclick="redirectToCustomerProfile(${reviewer.id})">${reviewer.user.first_name} ${reviewer.user.last_name}</h3>
                                     <div class="review_stars">
                                         ${getStarsTemplate(review.rating)}
                                     </div>
-                                    <p class="link" onclick="redirectToBusinessProfile(${business_user.user.pk})">über @${business_user.user.username}</p>
+                                    <p class="link" onclick="redirectToBusinessProfile(${business_user.id})">über @${business_user.user.username}</p>
                                 </div>
                             </div>
                             <p>${review.description}</p>
@@ -53,7 +54,7 @@ function getReviewWLinkEditableTemplateList(reviews) {
     let reviewListHTML = "";
 
     reviews.forEach(review => {
-        business_user = getUserInfo(review.business_user)
+        business_user = getUserInfo(review.business_user);
         reviewer = getUserInfo(review.reviewer)
 
         reviewListHTML += getReviewEditableTemplate(review, business_user, reviewer)
@@ -93,8 +94,8 @@ function getReviewEditableTemplate(review, business_user, reviewer) {
     `
 }
 
-function getReviewDialogformTemplate(review, edit=false) {
-    if (!review || typeof review !== 'object' ) {
+function getReviewDialogformTemplate(review, edit = false) {
+    if (!review || typeof review !== 'object') {
         return `
             <div class="card d_flex_cs_gm f_d_c">
                 Es ist ein Fehler aufgetreten
@@ -128,8 +129,8 @@ function getReviewDialogformTemplate(review, edit=false) {
     `
 }
 
-function getDeleteOrNotTemplate(review_id){
-    return `
+function getDeleteOrNotTemplate(review_id) {
+    return /*html*/ `
         <form onclick="stopProp(event)" class="m_auto small_form d_flex_cs_gm f_d_c pos_rel">
                     <div class="d_flex_cc_gxl f_d_c w_full">
             <img class="profile_img" src="./assets/icons/error_circle_red.svg" alt="" srcset="">
@@ -144,7 +145,7 @@ function getDeleteOrNotTemplate(review_id){
 }
 
 function getStarsEditTemplate(count) {
-    if (!count ) {
+    if (!count) {
         return `<div> Es ist ein Fehler aufgetreten </div>`;
     }
     let starsHTML = ""
@@ -159,7 +160,7 @@ function getStarsEditTemplate(count) {
 }
 
 function getStarsTemplate(count) {
-    if (!count ) {
+    if (!count) {
         return `<div> Es ist ein Fehler aufgetreten </div>`;
     }
     let starsHTML = ""

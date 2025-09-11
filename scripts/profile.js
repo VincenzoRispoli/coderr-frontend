@@ -21,6 +21,13 @@ let currentBusinessOfferListFilter = {
   page: 1,
 };
 
+let currentUserOrderListFilter = {
+  creator_id: null,
+  page: 1
+}
+
+const userFields = ['first_name', 'last_name', 'username', 'email'];
+
 /**
  * Initializes the profile page by setting the current user, rendering the page, and setting the header.
  * @async
@@ -45,11 +52,12 @@ async function init() {
  * @returns {Promise<void>}
  */
 async function renderPage() {
+  currentUserOrderListFilter.creator_id = currentUser.id
   await getFullProfileData();
 
   let contentRef = document.getElementById("content");
   if (currentUser.type == "business") {
-    currentBusinessOfferListFilter.creator_id = currentUser.user;
+    currentBusinessOfferListFilter.creator_id = currentUser.id;
     await setOffers(currentBusinessOfferListFilter);
     contentRef.innerHTML = getBusinessProfilePageTemplate(
       currentUser,
@@ -92,9 +100,9 @@ async function updateOfferListFilter() {
     "business_offer_list"
   ).innerHTML = `${getBusinessOfferTemplateList(currentOffers)}
     ${getOfferPagination(
-      calculateNumPages(allOffersLength, PAGE_SIZE),
-      currentBusinessOfferListFilter.page
-    )}`;
+    calculateNumPages(allOffersLength, PAGE_SIZE),
+    currentBusinessOfferListFilter.page
+  )}`;
 }
 
 /**
@@ -105,17 +113,20 @@ async function updateOfferListFilter() {
  */
 async function getFullProfileData() {
   if (currentUser.type == "business") {
-    await setReviewsForBusinessUser(currentUser.user);
+    await setReviewsForBusinessUser(currentUser.id);
   } else if (currentUser.type == "customer") {
-    await setReviewsForCustomerUser(currentUser.user);
+    await setReviewsForCustomerUser(currentUser.id);
   }
-
-  let orderResp = await getData(ORDER_URL);
+  let orderResp = await getData(ORDER_URL + getOrderFilters(currentUserOrderListFilter));
   if (orderResp.ok) {
-    currentOrders = orderResp.data;
+    currentOrders = orderResp.data.results;
   }
 
   await setUsers();
+}
+
+function getOrderFilters(params = {}) {
+  return `?creator_id=${params?.creator_id ?? ""}&page=${params?.page ?? 1}`
 }
 
 /**
@@ -127,13 +138,12 @@ async function getFullProfileData() {
  */
 async function changeReviewFilterProfile(element) {
   currentReviewOrdering = element.value;
-
   if (currentUser.type == "business") {
-    await setReviewsForBusinessUser(currentUser.user);
+    await setReviewsForBusinessUser(currentUser.id);
     document.getElementById("business_review_list").innerHTML =
       getReviewWLinkTemplateList(currentReviews);
   } else if (currentUser.type == "customer") {
-    await setReviewsForCustomerUser(currentUser.user);
+    await setReviewsForCustomerUser(currentUser.id);
     document.getElementById("edit_review_list").innerHTML =
       getReviewWLinkEditableTemplateList(currentReviews);
   }
@@ -173,9 +183,25 @@ async function changeOrderStatus(status, orderId) {
 async function businessEditOnsubmit(event) {
   event.preventDefault();
   const data = getFormData(event.target);
-  let formData = jsonToFormData(data);
-
+  let mappedFormData = mapFormToBusinessProfile(data)
+  let formData = jsonToFormData(mappedFormData);
   updateBusinessProfile(formData);
+}
+
+function mapFormToBusinessProfile(data) {
+  let profileData = {
+    user: {}
+  }
+  for (let key in data) {
+    if (userFields.includes(key)) {
+      profileData.user[key] = data[key]
+    } else {
+      profileData[key] = data[key]
+    }
+  }
+  profileData['type'] = 'business'
+
+  return profileData
 }
 
 /**
@@ -189,11 +215,9 @@ async function updateBusinessProfile(formData) {
   if (currentFile) {
     formData.append("file", currentFile);
   }
-
-  let resp = await patchData(PROFILE_URL + currentUser.user + "/", formData);
-
+  let resp = await patchData(PROFILE_URL + currentUser.id + "/", formData);
   if (resp.ok) {
-    let userResp = await getData(PROFILE_URL + resp.data.user + "/");
+    let userResp = await getData(PROFILE_URL + resp.data.id + "/");
     currentUser = userResp.data;
     closeDialog("business_dialog");
     document.getElementById("business_profile").innerHTML =
@@ -226,10 +250,23 @@ function abboardCustomerEdit() {
 async function customerEditOnsubmit(event) {
   event.preventDefault();
   const data = getFormData(event.target);
-
-  let formData = jsonToFormData(data);
-
+  let mappedData = mapFormToCustomerProfile(data)
+  let formData = jsonToFormData(mappedData);
   updateCustomerProfile(formData);
+}
+
+function mapFormToCustomerProfile(data) {
+  let profileData = {
+    user: {}
+  }
+  for (let key in data) {
+    if (userFields.includes(key)) {
+      profileData.user[key] = data[key]
+    } else {
+      profileData[key] = data[key]
+    }
+  }
+  return profileData
 }
 
 /**
@@ -243,10 +280,9 @@ async function updateCustomerProfile(formData) {
   if (currentFile) {
     formData.append("file", currentFile);
   }
-
-  let resp = await patchData(PROFILE_URL + currentUser.user + "/", formData);
+  let resp = await patchData(PROFILE_URL + currentUser.id + "/", formData);
   if (resp.ok) {
-    let userResp = await getData(PROFILE_URL + resp.data.user + "/");
+    let userResp = await getData(PROFILE_URL + resp.data.id + "/");
     currentUser = userResp.data;
     closeDialog("customer_dialog");
     document.getElementById("customer_profile").innerHTML =

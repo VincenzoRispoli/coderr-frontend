@@ -126,7 +126,7 @@ async function loadSingleOfferUser(profileId) {
  */
 async function loadRenderSingleOfferReviews() {
   await setUsers();
-  await setReviewsForBusinessUser(currentSingleOfferUser.user);
+  await setReviewsForBusinessUser(currentSingleOfferUser.id);
   document.getElementById("single_offer_review_list").innerHTML =
     getReviewWLinkTemplateList(currentReviews);
 }
@@ -140,7 +140,7 @@ async function loadRenderSingleOfferReviews() {
  */
 async function changeReviewFilterSingleOffer(element) {
   currentReviewOrdering = element.value;
-  await setReviewsForBusinessUser(currentSingleOfferUser.user);
+  await setReviewsForBusinessUser(currentSingleOfferUser.id);
   document.getElementById("single_offer_review_list").innerHTML =
     getReviewWLinkTemplateList(currentReviews);
 }
@@ -157,7 +157,8 @@ async function onSubmitReviewSingleOffer() {
     let data = {
       rating: countStars(),
       description: textInputRef.value,
-      business_user: currentSingleOfferUser.user,
+      business_user: currentSingleOfferUser.id,
+      reviewer: currentUser.id
     };
 
     let resp = await createReview(data);

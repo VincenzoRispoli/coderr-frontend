@@ -58,11 +58,7 @@ async function offerListInit() {
 function renderOfferList() {
   let listRef = document.getElementById("offer_list_content");
   listRef.innerHTML =
-    getOfferTemplateList(currentOffers) +
-    getOfferPagination(
-      calculateNumPages(allOffersLength, PAGE_SIZE),
-      currentOfferListFilter.page
-    );
+    getOfferTemplateList(currentOffers) + getOfferPagination(calculateNumPages(allOffersLength, PAGE_SIZE), currentOfferListFilter.page);
 }
 
 /**
@@ -136,9 +132,9 @@ function setGreetingsSection() {
   if (currentUser) {
     let greetingRef = document.getElementById("offer_list_greeting_section");
     greetingRef.classList.remove("d_none");
-    let name = currentUser.first_name
-      ? currentUser.first_name
-      : "@" + currentUser.username;
+    let name = currentUser.first_name 
+      ? currentUser.user.first_name
+      : "@" + currentUser.user.username;
     greetingRef.innerHTML = getGreetingBoxTemplate(name);
   }
 }
