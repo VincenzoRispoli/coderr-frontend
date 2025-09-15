@@ -250,7 +250,7 @@ function abboardCustomerEdit() {
 async function customerEditOnsubmit(event) {
   event.preventDefault();
   const data = getFormData(event.target);
-  let mappedData = mapFormToCustomerProfile(data)
+  let mappedData = mapFormToCustomerProfile(data);
   let formData = jsonToFormData(mappedData);
   updateCustomerProfile(formData);
 }

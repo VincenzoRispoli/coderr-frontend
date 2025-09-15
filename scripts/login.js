@@ -19,7 +19,6 @@ function checkAuthLogin() {
 function logInSubmit(event) {
   event.preventDefault();
   const data = getFormData(event.target);
-
   logIn(data);
 }
 

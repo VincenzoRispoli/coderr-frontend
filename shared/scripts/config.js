@@ -33,7 +33,7 @@ const LOGIN_URL = 'login/';
 
 const REGISTER_URL = 'registration/';
 
-const PROFILE_URL = 'profiles/';
+const PROFILE_URL = 'profile/';
 
 const BUSINESS_PROFILES_URL = 'profile/business/';
 
