@@ -35,9 +35,9 @@ const REGISTER_URL = 'registration/';
 
 const PROFILE_URL = 'profile/';
 
-const BUSINESS_PROFILES_URL = 'profile/business/';
+const BUSINESS_PROFILES_URL = 'profiles/business/';
 
-const CUSTOMER_PROFILES_URL = 'profile/customer/';
+const CUSTOMER_PROFILES_URL = 'profiles/customer/';
 
 const REVIEW_URL = 'reviews/';
 
